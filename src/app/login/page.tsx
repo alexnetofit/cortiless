@@ -25,6 +25,9 @@ export default function LoginPage() {
 
       if (signInError) throw signInError
 
+      // Refresh to sync cookies with middleware
+      router.refresh()
+
       // Check if admin
       const { data: profile } = await supabase
         .from('user_profiles')
