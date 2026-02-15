@@ -43,33 +43,39 @@ export default function ResultsChartStep({ step, answers, onContinue }: ResultsC
   }, [answers])
 
   return (
-    <div className="flex-1 flex flex-col items-center px-6 py-8">
+    <div className="flex-1 flex flex-col items-center justify-center px-6 py-4">
       <div className="max-w-lg w-full mx-auto text-center">
-        <h2 className="text-xl md:text-2xl font-bold text-secondary mb-3">
+        <h2 className="text-xl md:text-2xl font-bold text-secondary mb-2">
           {step.title}
         </h2>
 
-        <p className="text-muted mb-6">
+        <p className="text-muted mb-4 text-sm">
           We estimate that you can potentially reach{' '}
           <span className="text-primary font-semibold">{targetWeight} kg</span>{' '}
           weight target.
         </p>
 
         {/* Chart with background image and dynamic numbers */}
-        <div className="relative w-full max-w-[440px] mx-auto mb-8">
+        <div className="relative w-full max-w-[380px] mx-auto mb-4">
           <img
             src="/images/base-grafico-1.svg"
             alt="Weight chart"
             className="w-full h-auto"
           />
-          {/* Current weight - positioned over top-left pill */}
-          <div className="absolute top-[21%] left-[6%] w-[23%] flex items-center justify-center">
+          {/* Current weight - centered in top-left pill */}
+          <div
+            className="absolute flex items-center justify-center"
+            style={{ top: '19.15%', left: '2.56%', width: '23.75%', height: '11.93%' }}
+          >
             <span className="text-[#299DE0] font-bold text-sm md:text-base">
               {currentWeight} kg
             </span>
           </div>
-          {/* Target weight - positioned over bottom-center pill */}
-          <div className="absolute top-[70%] left-[30%] w-[23%] flex items-center justify-center">
+          {/* Target weight - centered in bottom-center pill */}
+          <div
+            className="absolute flex items-center justify-center"
+            style={{ top: '66.65%', left: '27.78%', width: '23.75%', height: '11.93%' }}
+          >
             <span className="text-[#299DE0] font-bold text-sm md:text-base">
               {targetWeight} kg
             </span>
