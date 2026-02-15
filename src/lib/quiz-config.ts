@@ -366,7 +366,7 @@ export const QUIZ_STEPS: QuizStep[] = [
     id: 'social-proof-media',
     type: 'social-proof',
     title: 'Our app and coaches featured in',
-    image: '/images/join-us-body-nutrition.avif',
+    image: '/images/expert.avif',
     infoContent: {
       text: 'Our program authors are certified fitness and lifestyle coaches with extensive experience in weight loss.',
       bullets: [],

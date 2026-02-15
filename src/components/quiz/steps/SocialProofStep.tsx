@@ -14,7 +14,7 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
   const isFirstSocialProof = step.id === 'social-proof-1'
 
   return (
-    <div className={`flex-1 flex flex-col items-center px-5 ${isFirstSocialProof ? 'py-4' : 'py-8'}`}>
+    <div className={`flex-1 flex flex-col items-center px-5 ${isFirstSocialProof ? 'py-4' : 'py-8'} ${isMediaStep ? 'pb-24' : ''}`}>
       <div className="max-w-lg w-full mx-auto text-center flex flex-col">
         <div>
           {/* Counter / Title */}
@@ -43,14 +43,21 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
             </div>
           )}
 
-          {/* Media logos */}
+          {/* Media logos image */}
           {isMediaStep && (
-            <div className="grid grid-cols-3 gap-4 mb-4 items-center justify-items-center opacity-60">
-              {['Mirror', 'Forbes Health', 'Sky Sports', 'Televisa', 'The Guardian', 'Oregon'].map((name) => (
-                <div key={name} className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-2 rounded">
-                  {name}
-                </div>
-              ))}
+            <div className="mb-4">
+              <img
+                src="/images/forbes.avif"
+                alt="Featured in media"
+                className="w-full max-w-sm mx-auto"
+              />
+            </div>
+          )}
+
+          {/* Info content */}
+          {step.infoContent?.text && (
+            <div className={isFirstSocialProof ? 'mb-2 px-2' : 'mb-4 px-2'}>
+              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-2xl md:text-3xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
             </div>
           )}
 
@@ -64,21 +71,26 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
               />
             </div>
           )}
-
-          {/* Info content */}
-          {step.infoContent?.text && (
-            <div className={isFirstSocialProof ? 'mb-2 px-2' : 'bg-accent rounded-xl p-6 mb-6'}>
-              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-2xl md:text-3xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
-            </div>
-          )}
         </div>
 
-        <button
-          onClick={onContinue}
-          className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-        >
-          Continue
-        </button>
+        {/* Floating button for media step, normal for others */}
+        {isMediaStep ? (
+          <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm px-6 py-4 z-50">
+            <button
+              onClick={onContinue}
+              className="w-full max-w-sm mx-auto block bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+            >
+              Continue
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={onContinue}
+            className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+          >
+            Continue
+          </button>
+        )}
       </div>
     </div>
   )
