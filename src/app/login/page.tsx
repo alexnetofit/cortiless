@@ -44,11 +44,13 @@ export default function LoginPage() {
       }
 
       // Check if onboarding is completed
-      const { data: onboarding } = await supabase
+      const { data: onboardingRows } = await supabase
         .from('user_onboarding')
         .select('completed_at')
         .eq('user_id', user.id)
-        .single()
+        .order('created_at', { ascending: false })
+        .limit(1)
+      const onboarding = onboardingRows?.[0]
 
       if (!onboarding?.completed_at) {
         router.push('/onboarding')

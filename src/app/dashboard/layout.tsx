@@ -17,11 +17,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { setCheckingOnboarding(false); return }
 
-      const { data: onboarding } = await supabase
+      const { data: onboardingRows } = await supabase
         .from('user_onboarding')
         .select('completed_at')
         .eq('user_id', user.id)
-        .single()
+        .order('created_at', { ascending: false })
+        .limit(1)
+
+      const onboarding = onboardingRows?.[0]
 
       if (!onboarding?.completed_at) {
         router.replace('/onboarding')

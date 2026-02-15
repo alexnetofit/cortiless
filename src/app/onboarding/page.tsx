@@ -173,27 +173,17 @@ export default function OnboardingPage() {
         completed_at: new Date().toISOString(),
       }
 
-      // Check if onboarding already exists for this user
-      const { data: existing } = await supabase
+      // Delete any existing onboarding records for this user (avoid duplicates)
+      await supabase
         .from('user_onboarding')
-        .select('id')
+        .delete()
         .eq('user_id', user.id)
-        .single()
 
-      if (existing) {
-        // Update existing record
-        const { error: updateError } = await supabase
-          .from('user_onboarding')
-          .update(onboardingData)
-          .eq('user_id', user.id)
-        if (updateError) console.error('Onboarding update error:', updateError)
-      } else {
-        // Insert new record
-        const { error: insertError } = await supabase
-          .from('user_onboarding')
-          .insert(onboardingData)
-        if (insertError) console.error('Onboarding insert error:', insertError)
-      }
+      // Insert fresh record
+      const { error: insertError } = await supabase
+        .from('user_onboarding')
+        .insert(onboardingData)
+      if (insertError) console.error('Onboarding insert error:', insertError)
 
       router.refresh()
       router.push('/dashboard')
