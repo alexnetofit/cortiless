@@ -10,36 +10,30 @@ interface ResultsChartStepProps {
 }
 
 export default function ResultsChartStep({ step, answers, onContinue }: ResultsChartStepProps) {
-  const { currentWeight, targetWeight } = useMemo(() => {
+  const { currentWeight, targetWeight, unit } = useMemo(() => {
     const weightData = answers['weight'] as Record<string, string> | undefined
     const desiredData = answers['desired-weight'] as Record<string, string> | undefined
+    const isImperial = weightData?.unit === 'imperial'
 
-    let cw = 78 // default
-    let tw = 63 // default
+    let cw = isImperial ? 172 : 78
+    let tw = isImperial ? 139 : 63
 
     if (weightData) {
-      const val = parseFloat(weightData.weight || weightData.weight_lbs || '78')
-      if (weightData.unit === 'imperial') {
-        cw = Math.round(val * 0.453592)
-      } else {
-        cw = val
-      }
+      cw = parseFloat(weightData.weight || weightData.weight_lbs || String(cw))
     }
 
     if (desiredData) {
-      const val = parseFloat(desiredData.desired_weight || desiredData.weight || '63')
-      if (desiredData.unit === 'imperial') {
-        tw = Math.round(val * 0.453592)
-      } else {
-        tw = val
-      }
+      tw = parseFloat(desiredData.desired_weight || desiredData.weight || String(tw))
     }
 
-    // Ensure target is achievable (max 18% loss in 12 weeks)
     const maxLoss = cw * 0.18
     const actualTarget = Math.max(tw, cw - maxLoss)
 
-    return { currentWeight: cw, targetWeight: Math.round(actualTarget * 10) / 10 }
+    return {
+      currentWeight: Math.round(cw),
+      targetWeight: Math.round(actualTarget * 10) / 10,
+      unit: isImperial ? 'lbs' : 'kg',
+    }
   }, [answers])
 
   return (
@@ -51,7 +45,7 @@ export default function ResultsChartStep({ step, answers, onContinue }: ResultsC
 
         <p className="text-muted mb-4 text-sm">
           We estimate that you can potentially reach{' '}
-          <span className="text-primary font-semibold">{targetWeight} kg</span>{' '}
+          <span className="text-primary font-semibold">{targetWeight} {unit}</span>{' '}
           weight target.
         </p>
 
@@ -68,7 +62,7 @@ export default function ResultsChartStep({ step, answers, onContinue }: ResultsC
             style={{ top: '19.15%', left: '2.56%', width: '23.75%', height: '11.93%' }}
           >
             <span className="text-[#299DE0] font-bold text-sm md:text-base">
-              {currentWeight} kg
+              {currentWeight} {unit}
             </span>
           </div>
           {/* Target weight - centered in bottom-center pill */}
@@ -77,7 +71,7 @@ export default function ResultsChartStep({ step, answers, onContinue }: ResultsC
             style={{ top: '66.65%', left: '27.78%', width: '23.75%', height: '11.93%' }}
           >
             <span className="text-[#299DE0] font-bold text-sm md:text-base">
-              {targetWeight} kg
+              {targetWeight} {unit}
             </span>
           </div>
         </div>
