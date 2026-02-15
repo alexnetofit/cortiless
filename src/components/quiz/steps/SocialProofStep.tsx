@@ -68,7 +68,7 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
           {/* Info content */}
           {step.infoContent?.text && (
             <div className={isFirstSocialProof ? 'mb-2 px-2' : 'bg-accent rounded-xl p-6 mb-6'}>
-              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-xl md:text-2xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
+              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-2xl md:text-3xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
             </div>
           )}
         </div>
