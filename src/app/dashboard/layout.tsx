@@ -1,13 +1,36 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { DropletIcon, ScaleIcon, UtensilsIcon } from '@/components/ui/Icons'
+import { supabase } from '@/lib/supabase'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [checkingOnboarding, setCheckingOnboarding] = useState(true)
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) { setCheckingOnboarding(false); return }
+
+      const { data: onboarding } = await supabase
+        .from('user_onboarding')
+        .select('completed_at')
+        .eq('user_id', user.id)
+        .single()
+
+      if (!onboarding?.completed_at) {
+        router.replace('/onboarding')
+        return
+      }
+      setCheckingOnboarding(false)
+    }
+    checkOnboarding()
+  }, [router])
 
   const navItems = [
     { href: '/dashboard', label: 'Home', icon: '🏠' },
@@ -15,6 +38,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/progress', label: 'Progress', iconComponent: ScaleIcon },
     { href: '/dashboard/water', label: 'Water', iconComponent: DropletIcon },
   ]
+
+  if (checkingOnboarding) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

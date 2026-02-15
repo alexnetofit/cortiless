@@ -28,14 +28,30 @@ export default function LoginPage() {
       // Refresh to sync cookies with middleware
       router.refresh()
 
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Login failed')
+
       // Check if admin
       const { data: profile } = await supabase
         .from('user_profiles')
         .select('is_admin')
+        .eq('id', user.id)
         .single()
 
       if (profile?.is_admin) {
         router.push('/admin')
+        return
+      }
+
+      // Check if onboarding is completed
+      const { data: onboarding } = await supabase
+        .from('user_onboarding')
+        .select('completed_at')
+        .eq('user_id', user.id)
+        .single()
+
+      if (!onboarding?.completed_at) {
+        router.push('/onboarding')
       } else {
         router.push('/dashboard')
       }
