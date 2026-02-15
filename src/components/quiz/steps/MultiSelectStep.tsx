@@ -36,7 +36,7 @@ export default function MultiSelectStep({ step, onAnswer }: MultiSelectStepProps
               <button
                 key={option.id}
                 onClick={() => toggleOption(option.id)}
-                className={`w-full rounded-2xl px-5 flex items-end justify-between transition-all duration-200 active:scale-[0.98] border-2 overflow-hidden ${
+                className={`w-full rounded-2xl px-5 flex items-center justify-between transition-all duration-200 active:scale-[0.98] border-2 overflow-hidden ${
                   hasImages ? 'py-0 min-h-[80px]' : 'py-4'
                 } ${
                   isSelected
@@ -44,7 +44,7 @@ export default function MultiSelectStep({ step, onAnswer }: MultiSelectStepProps
                     : 'bg-accent border-transparent hover:border-primary/20'
                 }`}
               >
-                <div className={`flex items-center gap-3 ${hasImages ? 'py-4' : ''}`}>
+                <div className="flex items-center gap-3">
                   <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                     isSelected ? 'bg-primary border-primary' : 'border-gray-300'
                   }`}>
@@ -54,13 +54,13 @@ export default function MultiSelectStep({ step, onAnswer }: MultiSelectStepProps
                     {option.label}
                   </span>
                 </div>
-                <div className="flex items-end gap-2">
+                <div className="flex items-end self-end gap-2">
                   {option.emoji && <span className="text-2xl py-4">{option.emoji}</span>}
                   {hasImages && option.image && (
                     <img
                       src={option.image}
                       alt={option.label}
-                      className="w-20 h-20 object-cover object-top rounded-none"
+                      className="w-20 h-20 object-cover object-top"
                     />
                   )}
                 </div>
