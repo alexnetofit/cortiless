@@ -20,8 +20,8 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
           {/* Counter / Title */}
           {isFirstSocialProof ? (
             <>
-              <p className="text-2xl md:text-3xl font-bold text-primary mb-1">{step.title}</p>
-              <p className="text-lg md:text-xl font-semibold text-secondary mb-3">{step.subtitle}</p>
+              <p className="text-3xl md:text-4xl font-bold text-primary mb-1">{step.title}</p>
+              <p className="text-xl md:text-2xl font-semibold text-secondary mb-3">{step.subtitle}</p>
             </>
           ) : (
             <>
@@ -54,28 +54,28 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
             </div>
           )}
 
-          {/* Image - horizontal crop for first social proof */}
+          {/* Image - horizontal crop keeping heads visible */}
           {step.image && (
             <div className={isFirstSocialProof ? 'mb-4 overflow-hidden rounded-2xl' : 'mb-6'}>
               <img
                 src={step.image}
                 alt=""
-                className={`w-full mx-auto ${isFirstSocialProof ? 'max-w-full md:max-w-md object-cover h-[220px] md:h-[280px] rounded-2xl' : 'max-w-sm rounded-xl shadow-lg'}`}
+                className={`w-full mx-auto ${isFirstSocialProof ? 'max-w-full md:max-w-md object-cover object-top h-[250px] md:h-[300px] rounded-2xl' : 'max-w-sm rounded-xl shadow-lg'}`}
               />
             </div>
           )}
 
           {/* Info content */}
           {step.infoContent?.text && (
-            <div className={isFirstSocialProof ? 'mb-4 px-2' : 'bg-accent rounded-xl p-6 mb-6'}>
-              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-lg md:text-xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
+            <div className={isFirstSocialProof ? 'mb-2 px-2' : 'bg-accent rounded-xl p-6 mb-6'}>
+              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-xl md:text-2xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
             </div>
           )}
         </div>
 
         <button
           onClick={onContinue}
-          className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+          className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg mt-2"
         >
           Continue
         </button>
