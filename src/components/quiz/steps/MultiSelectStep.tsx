@@ -20,7 +20,7 @@ export default function MultiSelectStep({ step, onAnswer }: MultiSelectStepProps
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center px-6 py-8">
+    <div className="flex-1 flex flex-col items-center px-6 pt-8 pb-24">
       <div className="max-w-lg w-full mx-auto">
         <h2 className="text-xl md:text-2xl font-bold text-secondary text-center mb-2">
           {step.title}
@@ -29,7 +29,7 @@ export default function MultiSelectStep({ step, onAnswer }: MultiSelectStepProps
           <p className="text-muted text-center mb-6">{step.subtitle}</p>
         )}
 
-        <div className="flex flex-col gap-3 mb-6">
+        <div className="flex flex-col gap-3">
           {step.options?.map((option) => {
             const isSelected = selected.includes(option.id)
             return (
@@ -68,14 +68,19 @@ export default function MultiSelectStep({ step, onAnswer }: MultiSelectStepProps
             )
           })}
         </div>
+      </div>
 
-        <button
-          onClick={() => onAnswer(selected)}
-          disabled={selected.length === 0}
-          className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/40 text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg disabled:shadow-none disabled:hover:scale-100"
-        >
-          Continue
-        </button>
+      {/* Floating sticky button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm border-t border-gray-100 px-6 py-4 z-50">
+        <div className="max-w-lg mx-auto">
+          <button
+            onClick={() => onAnswer(selected)}
+            disabled={selected.length === 0}
+            className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/40 text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg disabled:shadow-none disabled:hover:scale-100"
+          >
+            Continue
+          </button>
+        </div>
       </div>
     </div>
   )
