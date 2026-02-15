@@ -49,7 +49,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Link>
           ))}
           <Link
-            href="/auth/login"
+            href="/login"
             onClick={() => {
               // Will handle logout
               import('@/lib/supabase').then(({ supabase }) => supabase.auth.signOut())

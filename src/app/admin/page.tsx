@@ -72,7 +72,7 @@ export default function AdminDashboard() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
-    window.location.href = '/auth/login'
+    window.location.href = '/login'
   }
 
   if (loading) {

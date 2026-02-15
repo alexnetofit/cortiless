@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
     !user
   ) {
     const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
+    url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
@@ -59,7 +59,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect logged-in users from auth pages
-  if ((path.startsWith('/auth/login') || path.startsWith('/auth/register')) && user) {
+  if ((path === '/login' || path === '/register') && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
@@ -69,5 +69,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/onboarding/:path*', '/admin/:path*', '/auth/:path*'],
+  matcher: ['/dashboard/:path*', '/onboarding/:path*', '/admin/:path*', '/login', '/register', '/auth/:path*'],
 }

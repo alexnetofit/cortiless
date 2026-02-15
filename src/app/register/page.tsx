@@ -155,7 +155,7 @@ function RegisterForm() {
 
           <p className="text-center text-sm text-muted mt-6">
             Already have an account?{' '}
-            <a href="/auth/login" className="text-primary font-semibold hover:underline">
+            <a href="/login" className="text-primary font-semibold hover:underline">
               Log in
             </a>
           </p>

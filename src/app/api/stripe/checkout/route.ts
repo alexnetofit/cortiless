@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
         quiz_session_id: sessionId || '',
         duration_days: String(planDetails.duration),
       },
-      success_url: `${baseUrl}/auth/register?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
+      success_url: `${baseUrl}/register?session_id={CHECKOUT_SESSION_ID}&plan=${plan}`,
       cancel_url: `${baseUrl}/quiz?step=pricing`,
     })
 
