@@ -15,7 +15,7 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
 
   return (
     <div className={`flex-1 flex flex-col items-center px-5 ${isFirstSocialProof ? 'py-4' : 'py-8'}`}>
-      <div className={`max-w-lg w-full mx-auto text-center flex flex-col ${isFirstSocialProof ? 'flex-1 justify-between' : ''}`}>
+      <div className="max-w-lg w-full mx-auto text-center flex flex-col">
         <div>
           {/* Counter / Title */}
           {isFirstSocialProof ? (
@@ -56,11 +56,11 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
 
           {/* Image - horizontal crop keeping heads visible */}
           {step.image && (
-            <div className={isFirstSocialProof ? 'mb-4 overflow-hidden rounded-2xl' : 'mb-6'}>
+            <div className={isFirstSocialProof ? 'mb-4' : 'mb-6'}>
               <img
                 src={step.image}
                 alt=""
-                className={`w-full mx-auto ${isFirstSocialProof ? 'max-w-full md:max-w-md object-cover object-top h-[250px] md:h-[300px] rounded-2xl' : 'max-w-sm rounded-xl shadow-lg'}`}
+                className={`w-full mx-auto rounded-2xl ${isFirstSocialProof ? 'max-w-full md:max-w-md' : 'max-w-sm shadow-lg'}`}
               />
             </div>
           )}
@@ -75,7 +75,7 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
 
         <button
           onClick={onContinue}
-          className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg mt-2"
+          className="w-full max-w-sm mx-auto bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
         >
           Continue
         </button>
