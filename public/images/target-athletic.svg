@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200">
+  <!-- Head (skin) -->
+  <ellipse cx="60" cy="20" rx="14" ry="18" fill="#F5D0C5"/>
+  <!-- Neck (skin) - thicker, muscular -->
+  <rect x="52" y="36" width="16" height="8" rx="2" fill="#F5D0C5"/>
+  <!-- Shoulders - broad, muscular -->
+  <path d="M38 40 L42 44 L44 52 L48 58 L72 58 L76 52 L78 44 L82 40 L86 48 L84 58 L36 58 L34 48 Z" fill="#F5D0C5"/>
+  <!-- Bust - athletic, defined -->
+  <path d="M44 58 L46 68 Q52 78 60 80 Q68 78 74 68 L76 58 Z" fill="#F5D0C5"/>
+  <!-- Top (clothes) - tight fitting -->
+  <path d="M44 68 L42 72 L40 88 Q38 100 42 108 L60 110 L78 108 Q82 100 80 88 L76 72 L74 68 Z" fill="#2D2D2D"/>
+  <!-- Waist - V-taper, very defined -->
+  <path d="M42 108 L38 120 Q35 135 40 145 L60 148 L80 145 Q85 135 82 120 L78 108 Z" fill="#2D2D2D"/>
+  <!-- Legs (skin) - very muscular, defined quads -->
+  <path d="M44 148 L38 165 L35 185 L38 200 L52 200 L50 165 L48 148 Z" fill="#F5D0C5"/>
+  <path d="M76 148 L70 165 L68 200 L82 200 L85 185 L82 165 L76 148 Z" fill="#F5D0C5"/>
+  <!-- Arms (skin) - very muscular, defined biceps -->
+  <path d="M32 48 L18 65 L20 88 L28 95 L36 85 L34 62 Z" fill="#F5D0C5"/>
+  <path d="M88 48 L102 65 L100 88 L92 95 L84 85 L86 62 Z" fill="#F5D0C5"/>
+</svg>

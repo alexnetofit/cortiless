@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200">
+  <!-- Back view base body -->
+  <ellipse cx="60" cy="30" rx="20" ry="25" fill="#F5D0C5"/>
+  <path d="M40 55 L35 90 L38 130 L42 165 L48 190 L72 190 L78 165 L82 130 L85 90 L80 55 L40 55 Z" fill="#F5D0C5"/>
+  <path d="M42 60 L42 95 L60 98 L78 95 L78 60 L42 60 Z" fill="#2D2D2D"/>
+  <!-- Glutes highlighted -->
+  <path d="M44 145 Q48 165 52 185 L68 185 Q72 165 76 145 Q70 135 60 133 Q50 135 44 145 Z" fill="#E85D75"/>
+</svg>

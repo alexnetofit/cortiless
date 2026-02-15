@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200">
+  <!-- Head (skin) -->
+  <ellipse cx="60" cy="20" rx="14" ry="18" fill="#F5D0C5"/>
+  <!-- Neck (skin) -->
+  <rect x="54" y="36" width="12" height="8" rx="2" fill="#F5D0C5"/>
+  <!-- Bust/shoulders - toned, defined -->
+  <path d="M44 42 Q52 38 60 46 Q68 38 76 42 L80 52 L78 58 L42 58 L40 52 Z" fill="#F5D0C5"/>
+  <!-- Top (clothes) - fitted, shows waist -->
+  <path d="M42 58 L44 62 L46 75 Q48 88 60 90 Q72 88 74 75 L76 62 L78 58 L82 60 L80 92 L40 92 L38 60 Z" fill="#2D2D2D"/>
+  <!-- Waist/hips - toned athletic, defined waist -->
+  <path d="M40 92 L38 100 Q36 118 42 132 Q48 138 60 140 Q72 138 78 132 Q84 118 82 100 L80 92 Z" fill="#2D2D2D"/>
+  <!-- Legs (skin) - toned, defined -->
+  <path d="M44 140 L42 160 L40 200 L56 200 L54 160 L52 140 Z" fill="#F5D0C5"/>
+  <path d="M64 140 L66 160 L64 200 L80 200 L82 160 L76 140 Z" fill="#F5D0C5"/>
+  <!-- Arms (skin) - toned with definition -->
+  <path d="M32 55 L24 75 L26 95 L34 92 L30 72 Z" fill="#F5D0C5"/>
+  <path d="M88 55 L96 75 L94 95 L86 92 L90 72 Z" fill="#F5D0C5"/>
+</svg>

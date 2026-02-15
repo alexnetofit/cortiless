@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200">
+  <!-- Head (skin) -->
+  <ellipse cx="60" cy="20" rx="14" ry="18" fill="#F5D0C5"/>
+  <!-- Neck (skin) -->
+  <rect x="54" y="36" width="12" height="8" rx="2" fill="#F5D0C5"/>
+  <!-- Bust (skin) -->
+  <path d="M47 44 Q58 40 60 48 Q62 40 73 44 L76 56 L44 56 Z" fill="#F5D0C5"/>
+  <!-- Top (clothes) -->
+  <path d="M44 56 L46 58 L46 76 L74 76 L74 58 L76 56 L78 60 L76 82 L44 82 L42 60 Z" fill="#2D2D2D"/>
+  <!-- Waist/hips - average proportion -->
+  <path d="M44 82 L42 98 L41 120 L45 142 L60 144 L75 142 L79 120 L78 98 L76 82 Z" fill="#2D2D2D"/>
+  <!-- Legs (skin) -->
+  <path d="M46 144 L44 200 L56 200 L54 144 Z" fill="#F5D0C5"/>
+  <path d="M64 144 L62 200 L74 200 L76 144 Z" fill="#F5D0C5"/>
+  <!-- Arms (skin) -->
+  <ellipse cx="30" cy="68" rx="5" ry="18" fill="#F5D0C5" transform="rotate(-10 30 68)"/>
+  <ellipse cx="90" cy="68" rx="5" ry="18" fill="#F5D0C5" transform="rotate(10 90 68)"/>
+</svg>

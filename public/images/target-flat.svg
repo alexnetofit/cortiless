@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 200">
+  <!-- Head (skin) -->
+  <ellipse cx="60" cy="20" rx="13" ry="17" fill="#F5D0C5"/>
+  <!-- Neck (skin) -->
+  <rect x="55" y="35" width="10" height="10" rx="2" fill="#F5D0C5"/>
+  <!-- Bust - minimal, flat -->
+  <path d="M48 44 L50 56 L70 56 L72 44 Q62 42 60 48 Q58 42 48 44" fill="#F5D0C5"/>
+  <!-- Top (clothes) - slim straight torso -->
+  <path d="M50 56 L48 58 L48 88 L72 88 L72 58 L70 56 L72 54 L74 90 L46 90 L48 54 Z" fill="#2D2D2D"/>
+  <!-- Waist/hips - slim, flat stomach, narrow -->
+  <path d="M46 90 L45 105 L46 125 L50 142 L60 143 L70 142 L74 125 L75 105 L74 90 Z" fill="#2D2D2D"/>
+  <!-- Legs (skin) - slender -->
+  <path d="M50 143 L48 200 L55 200 L53 143 Z" fill="#F5D0C5"/>
+  <path d="M67 143 L65 200 L72 200 L70 143 Z" fill="#F5D0C5"/>
+  <!-- Arms (skin) - thin -->
+  <ellipse cx="28" cy="62" rx="4" ry="22" fill="#F5D0C5" transform="rotate(-8 28 62)"/>
+  <ellipse cx="92" cy="62" rx="4" ry="22" fill="#F5D0C5" transform="rotate(8 92 62)"/>
+</svg>
