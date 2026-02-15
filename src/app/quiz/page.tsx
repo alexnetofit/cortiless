@@ -42,6 +42,8 @@ export default function QuizPage() {
           }
           const existingId = load('quiz_session_id')
           if (existingId) setSessionId(existingId)
+          const savedUnit = load('quiz_unit_system')
+          if (savedUnit === 'imperial' || savedUnit === 'metric') setUnitSystem(savedUnit)
           setReady(true)
           return
         }
@@ -174,7 +176,7 @@ export default function QuizPage() {
             onAnswer={handleAnswer}
             onEmailSubmit={handleEmailSubmit}
             unitSystem={unitSystem}
-            onUnitSystemChange={setUnitSystem}
+            onUnitSystemChange={(system) => { setUnitSystem(system); store('quiz_unit_system', system) }}
             sessionId={sessionId}
           />
         </AnimatePresence>
