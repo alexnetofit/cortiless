@@ -14,7 +14,7 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
   const isFirstSocialProof = step.id === 'social-proof-1'
 
   return (
-    <div className={`flex-1 flex flex-col items-center px-5 ${isFirstSocialProof ? 'py-4' : 'py-8'} ${isMediaStep ? 'pb-24' : ''}`}>
+    <div className={`flex-1 flex flex-col items-center px-5 ${isFirstSocialProof ? 'py-4' : 'py-8'} ${(isMediaStep || isForbesStep) ? 'pb-24' : ''}`}>
       <div className="max-w-lg w-full mx-auto text-center flex flex-col">
         <div>
           {/* Counter / Title */}
@@ -73,8 +73,8 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
           )}
         </div>
 
-        {/* Floating button for media step, normal for others */}
-        {isMediaStep ? (
+        {/* Floating button for media/forbes steps, normal for others */}
+        {(isMediaStep || isForbesStep) ? (
           <div className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-sm px-6 py-4 z-50">
             <button
               onClick={onContinue}
