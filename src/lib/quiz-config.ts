@@ -149,11 +149,11 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: 'single-select',
     title: 'What is your target body type?',
     options: [
-      { id: 'curvy', label: 'Curvy', image: '/images/target-curvy.svg' },
-      { id: 'regular', label: 'Regular', image: '/images/target-regular.svg' },
-      { id: 'flat', label: 'Flat', image: '/images/target-flat.svg' },
-      { id: 'fit', label: 'Fit', image: '/images/target-fit.svg' },
-      { id: 'athletic', label: 'Athletic', image: '/images/target-athletic.svg' },
+      { id: 'curvy', label: 'Curvy', image: '/images/meta-1.png' },
+      { id: 'regular', label: 'Regular', image: '/images/meta-2.png' },
+      { id: 'flat', label: 'Flat', image: '/images/meta-3.png' },
+      { id: 'fit', label: 'Fit', image: '/images/meta-4.png' },
+      { id: 'athletic', label: 'Athletic', image: '/images/meta-5.png' },
     ],
   },
 
