@@ -59,23 +59,23 @@ export default function LandingStep({ step, onAnswer }: LandingStepProps) {
 
         {/* Mobile layout - image with overlapping title */}
         <div className="md:hidden flex flex-col">
-          {/* Image container */}
-          <div className="relative flex justify-center pt-4 px-4">
+          {/* Image container - smaller with visible belly */}
+          <div className="relative flex justify-center pt-2 px-4">
             <img
               src="/images/tela-1.png"
               alt="Woman"
-              className="relative z-0 w-full max-w-[260px] object-contain"
+              className="relative z-0 w-full max-w-[200px] object-contain"
             />
-            {/* Gradient fade at bottom of image */}
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-accent to-transparent z-[1]" />
+            {/* Subtle gradient fade at very bottom of image */}
+            <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-accent to-transparent z-[1]" />
           </div>
 
-          {/* Title overlapping bottom of image */}
-          <div className="relative z-10 -mt-14 text-center px-4">
-            <h1 className="text-[1.65rem] font-black text-secondary leading-tight">
+          {/* Title slightly overlapping bottom of image */}
+          <div className="relative z-10 -mt-6 text-center px-4">
+            <h1 className="text-[1.5rem] font-black text-secondary leading-tight">
               {lines.map((line, i) => (
                 <span key={i}>
-                  <span className="bg-primary/90 text-white px-3 py-1 inline-block mb-1">
+                  <span className="bg-primary/90 text-white px-2.5 py-0.5 inline-block mb-1">
                     {line}
                   </span>
                   <br />
@@ -83,16 +83,16 @@ export default function LandingStep({ step, onAnswer }: LandingStepProps) {
               ))}
             </h1>
 
-            <p className="text-lg text-secondary mt-4 mb-5 font-medium">
+            <p className="text-base text-secondary mt-3 mb-4 font-medium">
               {step.subtitle}
             </p>
 
-            <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
+            <div className="grid grid-cols-2 gap-2.5 max-w-sm mx-auto">
               {step.options?.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => onAnswer(option.id)}
-                  className="bg-primary hover:bg-primary-dark text-white font-semibold py-3.5 px-5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg text-sm"
+                  className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg text-sm"
                 >
                   {option.label}
                 </button>
