@@ -26,12 +26,9 @@ export default function ResultsChartStep({ step, answers, onContinue }: ResultsC
       tw = parseFloat(desiredData.desired_weight || desiredData.weight || String(tw))
     }
 
-    const maxLoss = cw * 0.18
-    const actualTarget = Math.max(tw, cw - maxLoss)
-
     return {
       currentWeight: Math.round(cw),
-      targetWeight: Math.round(actualTarget * 10) / 10,
+      targetWeight: Math.round(tw),
       unit: isImperial ? 'lbs' : 'kg',
     }
   }, [answers])

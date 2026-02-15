@@ -38,12 +38,12 @@ export default function ResultsProgressStep({ step, answers, onContinue }: Resul
             alt="7-day results"
             className="w-full h-auto rounded-2xl"
           />
-          {/* Weight loss value - positioned over the pill/bubble */}
+          {/* Weight loss value - centered in the bubble */}
           <div
             className="absolute flex items-center justify-center"
-            style={{ top: '12%', left: '22%', width: '56%', height: '18%' }}
+            style={{ top: '8%', left: '18%', width: '52%', height: '22%' }}
           >
-            <span className="text-teal-500 font-bold text-2xl md:text-3xl">
+            <span className="text-[#299DE0] font-bold text-2xl md:text-3xl">
               -{estimatedLoss} {unit}
             </span>
           </div>
