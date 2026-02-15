@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { QuizStep } from '@/lib/quiz-config'
-import { PLANS, PlanKey } from '@/lib/stripe'
+import { PLANS, PlanKey } from '@/lib/plans'
 
 interface PricingStepProps {
   step: QuizStep

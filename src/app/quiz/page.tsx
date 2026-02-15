@@ -13,51 +13,65 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [unitSystem, setUnitSystem] = useState<'imperial' | 'metric'>('metric')
+  const [ready, setReady] = useState(false)
 
   // Initialize session
   useEffect(() => {
     const initSession = async () => {
-      // Check if there's an existing session
-      const existingId = sessionStorage.getItem('quiz_session_id')
-      if (existingId) {
-        setSessionId(existingId)
-        // Load existing answers
-        const savedAnswers = sessionStorage.getItem('quiz_answers')
-        if (savedAnswers) {
-          setAnswers(JSON.parse(savedAnswers))
+      try {
+        // Check if there's an existing session
+        const existingId = sessionStorage.getItem('quiz_session_id')
+        if (existingId) {
+          setSessionId(existingId)
+          const savedAnswers = sessionStorage.getItem('quiz_answers')
+          if (savedAnswers) {
+            try { setAnswers(JSON.parse(savedAnswers)) } catch { /* ignore */ }
+          }
+          const savedStep = sessionStorage.getItem('quiz_current_step')
+          if (savedStep) {
+            setCurrentStep(parseInt(savedStep))
+          }
+          setReady(true)
+          return
         }
-        const savedStep = sessionStorage.getItem('quiz_current_step')
-        if (savedStep) {
-          setCurrentStep(parseInt(savedStep))
+
+        // Load initial answer from landing
+        const initialAnswer = sessionStorage.getItem('quiz_initial_answer')
+        if (initialAnswer) {
+          const initialAnswers = { 'weight-loss-goal': initialAnswer }
+          setAnswers(initialAnswers)
+          setCurrentStep(1)
+          sessionStorage.removeItem('quiz_initial_answer')
+          sessionStorage.setItem('quiz_answers', JSON.stringify(initialAnswers))
+          sessionStorage.setItem('quiz_current_step', '1')
         }
-        return
-      }
 
-      // Create new session
-      const urlParams = new URLSearchParams(window.location.search)
-      const { data, error } = await supabase
-        .from('quiz_sessions')
-        .insert({
-          utm_source: urlParams.get('utm_source'),
-          utm_medium: urlParams.get('utm_medium'),
-          utm_campaign: urlParams.get('utm_campaign'),
-        })
-        .select('id')
-        .single()
+        // Try to create new session in DB (non-blocking)
+        try {
+          const urlParams = new URLSearchParams(window.location.search)
+          const { data, error } = await supabase
+            .from('quiz_sessions')
+            .insert({
+              utm_source: urlParams.get('utm_source'),
+              utm_medium: urlParams.get('utm_medium'),
+              utm_campaign: urlParams.get('utm_campaign'),
+            })
+            .select('id')
+            .single()
 
-      if (!error && data) {
-        setSessionId(data.id)
-        sessionStorage.setItem('quiz_session_id', data.id)
+          if (!error && data) {
+            setSessionId(data.id)
+            sessionStorage.setItem('quiz_session_id', data.id)
+          }
+        } catch {
+          // DB not available - quiz still works via sessionStorage
+          console.warn('Could not create quiz session in DB')
+        }
+      } catch {
+        // Fallback - quiz works without DB
+        console.warn('Quiz init error - continuing without DB')
       }
-
-      // Load initial answer from landing
-      const initialAnswer = sessionStorage.getItem('quiz_initial_answer')
-      if (initialAnswer) {
-        const initialAnswers = { 'weight-loss-goal': initialAnswer }
-        setAnswers(initialAnswers)
-        setCurrentStep(1) // Skip landing since they already answered
-        sessionStorage.removeItem('quiz_initial_answer')
-      }
+      setReady(true)
     }
 
     initSession()
@@ -69,13 +83,17 @@ export default function QuizPage() {
     sessionStorage.setItem('quiz_current_step', String(step))
 
     if (sessionId) {
-      await supabase
-        .from('quiz_sessions')
-        .update({
-          answers: newAnswers,
-          current_step: step + 1,
-        })
-        .eq('id', sessionId)
+      try {
+        await supabase
+          .from('quiz_sessions')
+          .update({
+            answers: newAnswers,
+            current_step: step + 1,
+          })
+          .eq('id', sessionId)
+      } catch {
+        // Non-blocking - continue quiz
+      }
     }
   }, [sessionId])
 
@@ -103,14 +121,18 @@ export default function QuizPage() {
     setAnswers(newAnswers)
 
     if (sessionId) {
-      await supabase
-        .from('quiz_sessions')
-        .update({
-          email,
-          answers: newAnswers,
-          current_step: currentStep + 1,
-        })
-        .eq('id', sessionId)
+      try {
+        await supabase
+          .from('quiz_sessions')
+          .update({
+            email,
+            answers: newAnswers,
+            current_step: currentStep + 1,
+          })
+          .eq('id', sessionId)
+      } catch {
+        // Non-blocking
+      }
     }
 
     sessionStorage.setItem('quiz_email', email)
@@ -121,6 +143,14 @@ export default function QuizPage() {
   const step = QUIZ_STEPS[currentStep]
   const totalProgressSteps = getTotalQuizSteps()
   const currentProgressStep = getProgressStepNumber(currentStep)
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
