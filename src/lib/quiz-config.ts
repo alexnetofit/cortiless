@@ -65,7 +65,7 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: 'social-proof',
     title: '1,877,381',
     subtitle: 'women have already joined',
-    image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=400&fit=crop',
+    image: '/images/tela-2.png',
     infoContent: {
       text: 'Designed to support healthy cortisol levels for women over 40',
       bullets: [],
@@ -108,10 +108,10 @@ export const QUIZ_STEPS: QuizStep[] = [
     title: 'Why do you want to lose weight?',
     subtitle: 'You can have multiple goals',
     options: [
-      { id: 'looks', label: 'Improve how I look', image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=200&h=200&fit=crop' },
-      { id: 'health', label: 'Become healthier', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=200&h=200&fit=crop' },
-      { id: 'calm', label: 'Feel calmer', image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=200&h=200&fit=crop' },
-      { id: 'energy', label: 'Improved energy & mood', image: 'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=200&h=200&fit=crop' },
+      { id: 'looks', label: 'Improve how I look', image: '/images/1.png' },
+      { id: 'health', label: 'Become healthier', image: '/images/2.png' },
+      { id: 'calm', label: 'Feel calmer', image: '/images/3.png' },
+      { id: 'energy', label: 'Improved energy & mood', image: '/images/4.png' },
     ],
   },
 
@@ -121,11 +121,11 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: 'single-select',
     title: 'What is your current body type?',
     options: [
-      { id: 'regular', label: 'Regular', image: '/images/body-regular.svg' },
-      { id: 'flabby', label: 'Flabby', image: '/images/body-flabby.svg' },
-      { id: 'muffin-top', label: 'Muffin top', image: '/images/body-muffin.svg' },
-      { id: 'overweight', label: 'Overweight', image: '/images/body-overweight.svg' },
-      { id: 'obese', label: 'Obese', image: '/images/body-obese.svg' },
+      { id: 'regular', label: 'Regular', image: '/images/regular.png' },
+      { id: 'flabby', label: 'Flabby', image: '/images/flabby.png' },
+      { id: 'muffin-top', label: 'Muffin top', image: '/images/muffin-top.png' },
+      { id: 'overweight', label: 'Overweight', image: '/images/overweight.png' },
+      { id: 'obese', label: 'Obese', image: '/images/obese.png' },
     ],
   },
 
@@ -208,7 +208,7 @@ export const QUIZ_STEPS: QuizStep[] = [
     id: 'diets-info',
     type: 'info',
     title: "Traditional diets don't work when cortisol is out of balance",
-    image: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=600&h=400&fit=crop',
+    image: '/images/nutrition-menopause.avif',
     infoContent: {
       text: 'This plan helps women over 40 lose weight, boost energy, and curb cravings by calming stress hormones with hormone-friendly meals, simple exercise, and sustainable routines.',
       bullets: [],
@@ -342,7 +342,7 @@ export const QUIZ_STEPS: QuizStep[] = [
     type: 'social-proof',
     title: "The best women's lifestyle app in 2025",
     subtitle: 'according to',
-    image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&h=600&fit=crop',
+    image: '/images/join-us-body-nutrition.avif',
   },
 
   // Step 23: Email capture
@@ -366,7 +366,7 @@ export const QUIZ_STEPS: QuizStep[] = [
     id: 'social-proof-media',
     type: 'social-proof',
     title: 'Our app and coaches featured in',
-    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=600&fit=crop',
+    image: '/images/join-us-body-nutrition.avif',
     infoContent: {
       text: 'Our program authors are certified fitness and lifestyle coaches with extensive experience in weight loss.',
       bullets: [],

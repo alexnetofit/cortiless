@@ -29,18 +29,14 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
           </>
         )}
 
-        {/* Forbes badge */}
+        {/* Forbes badge image */}
         {isForbesStep && (
           <div className="mb-6">
-            <div className="flex justify-center gap-1 text-warning mb-2">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <svg key={i} className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-              ))}
-            </div>
-            <p className="text-muted text-sm mb-1">according to</p>
-            <p className="text-2xl font-bold text-secondary">Forbes <span className="text-primary">HEALTH</span></p>
+            <img
+              src="/images/best-fitness-app.jpg"
+              alt="Best Fitness App - Forbes Health"
+              className="w-full max-w-sm mx-auto rounded-xl"
+            />
           </div>
         )}
 

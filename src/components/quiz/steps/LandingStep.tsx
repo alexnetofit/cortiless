@@ -47,8 +47,8 @@ export default function LandingStep({ step, onAnswer }: LandingStepProps) {
           <div className="flex-1 relative flex justify-center">
             <div className="absolute -right-20 -top-20 w-[400px] h-[400px] md:w-[500px] md:h-[500px] bg-white/30 rounded-full hidden md:block" />
             <img
-              src="https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=500&h=600&fit=crop&crop=top"
-              alt="Happy woman"
+              src="/images/tela-1.png"
+              alt="Woman"
               className="relative z-10 rounded-lg w-full max-w-xs md:max-w-sm"
             />
           </div>
