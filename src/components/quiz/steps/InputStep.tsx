@@ -5,13 +5,15 @@ import { QuizStep } from '@/lib/quiz-config'
 
 interface InputStepProps {
   step: QuizStep
+  answers: Record<string, unknown>
   onAnswer: (value: Record<string, string>) => void
   unitSystem: 'imperial' | 'metric'
   onUnitSystemChange: (system: 'imperial' | 'metric') => void
 }
 
-export default function InputStep({ step, onAnswer, unitSystem, onUnitSystemChange }: InputStepProps) {
-  const [values, setValues] = useState<Record<string, string>>({})
+export default function InputStep({ step, answers, onAnswer, unitSystem, onUnitSystemChange }: InputStepProps) {
+  const savedAnswer = answers[step.id] as Record<string, string> | undefined
+  const [values, setValues] = useState<Record<string, string>>(savedAnswer || {})
   const config = step.inputConfig
 
   if (!config) return null

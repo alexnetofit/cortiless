@@ -5,11 +5,12 @@ import { QuizStep } from '@/lib/quiz-config'
 
 interface EmailCaptureStepProps {
   step: QuizStep
+  savedEmail?: string
   onSubmit: (email: string) => void
 }
 
-export default function EmailCaptureStep({ step, onSubmit }: EmailCaptureStepProps) {
-  const [email, setEmail] = useState('')
+export default function EmailCaptureStep({ step, savedEmail, onSubmit }: EmailCaptureStepProps) {
+  const [email, setEmail] = useState(savedEmail || '')
   const [error, setError] = useState('')
 
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)

@@ -82,6 +82,7 @@ export default function QuizStepRenderer({
         return (
           <InputStep
             step={step}
+            answers={answers}
             onAnswer={(value) => onAnswer(step.id, value)}
             unitSystem={unitSystem}
             onUnitSystemChange={onUnitSystemChange}
@@ -107,6 +108,7 @@ export default function QuizStepRenderer({
         return (
           <EmailCaptureStep
             step={step}
+            savedEmail={typeof localStorage !== 'undefined' ? localStorage.getItem('quiz_email') || '' : ''}
             onSubmit={onEmailSubmit}
           />
         )
