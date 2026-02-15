@@ -41,7 +41,7 @@ export default function ResultsProgressStep({ step, answers, onContinue }: Resul
           {/* Weight loss value - centered in the bubble */}
           <div
             className="absolute flex items-center justify-center"
-            style={{ top: '8%', left: '18%', width: '52%', height: '22%' }}
+            style={{ top: '13%', left: '15%', width: '48%', height: '16%' }}
           >
             <span className="text-[#299DE0] font-bold text-2xl md:text-3xl">
               -{estimatedLoss} {unit}
