@@ -46,7 +46,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
   const handleCheckout = async () => {
     setLoading(true)
     try {
-      const email = sessionStorage.getItem('quiz_email') || ''
+      const email = localStorage.getItem('quiz_email') || ''
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

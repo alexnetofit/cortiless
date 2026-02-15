@@ -17,7 +17,7 @@ function RegisterForm() {
 
   useEffect(() => {
     // Pre-fill email from quiz
-    const quizEmail = sessionStorage.getItem('quiz_email')
+    const quizEmail = localStorage.getItem('quiz_email')
     if (quizEmail) setEmail(quizEmail)
   }, [])
 
@@ -39,8 +39,8 @@ function RegisterForm() {
 
       if (data.user) {
         // Create user profile
-        const quizSessionId = sessionStorage.getItem('quiz_session_id')
-        const quizAnswers = sessionStorage.getItem('quiz_answers')
+        const quizSessionId = localStorage.getItem('quiz_session_id')
+        const quizAnswers = localStorage.getItem('quiz_answers')
         const answers = quizAnswers ? JSON.parse(quizAnswers) : {}
 
         // Calculate plan expiry
@@ -72,10 +72,10 @@ function RegisterForm() {
         })
 
         // Clear quiz data
-        sessionStorage.removeItem('quiz_session_id')
-        sessionStorage.removeItem('quiz_answers')
-        sessionStorage.removeItem('quiz_current_step')
-        sessionStorage.removeItem('quiz_email')
+        localStorage.removeItem('quiz_session_id')
+        localStorage.removeItem('quiz_answers')
+        localStorage.removeItem('quiz_current_step')
+        localStorage.removeItem('quiz_email')
 
         router.push('/onboarding')
       }
