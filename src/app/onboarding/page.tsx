@@ -161,7 +161,7 @@ export default function OnboardingPage() {
         return
       }
 
-      await supabase.from('user_onboarding').insert({
+      const onboardingData = {
         user_id: user.id,
         sex: finalAnswers.sex as string,
         dietary_preferences: finalAnswers.dietary_preferences as string[],
@@ -171,18 +171,36 @@ export default function OnboardingPage() {
         daily_meals: parseInt(finalAnswers.daily_meals as string),
         cooking_time: finalAnswers.cooking_time as string,
         completed_at: new Date().toISOString(),
-      })
+      }
 
-      // Generate initial meal plan
-      await fetch('/api/meal-plan/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id }),
-      })
+      // Check if onboarding already exists for this user
+      const { data: existing } = await supabase
+        .from('user_onboarding')
+        .select('id')
+        .eq('user_id', user.id)
+        .single()
 
+      if (existing) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from('user_onboarding')
+          .update(onboardingData)
+          .eq('user_id', user.id)
+        if (updateError) console.error('Onboarding update error:', updateError)
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from('user_onboarding')
+          .insert(onboardingData)
+        if (insertError) console.error('Onboarding insert error:', insertError)
+      }
+
+      router.refresh()
       router.push('/dashboard')
     } catch (error) {
       console.error('Onboarding error:', error)
+      // Still try to go to dashboard
+      router.refresh()
       router.push('/dashboard')
     } finally {
       setLoading(false)
