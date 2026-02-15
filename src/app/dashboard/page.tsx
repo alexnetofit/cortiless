@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
 
@@ -18,6 +19,7 @@ interface WaterData {
 }
 
 export default function DashboardHome() {
+  const router = useRouter()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [waterToday, setWaterToday] = useState<WaterData>({ glasses: 0, goal: 8 })
   const [latestWeight, setLatestWeight] = useState<number | null>(null)
@@ -158,6 +160,25 @@ export default function DashboardHome() {
             <p className="text-sm text-muted">{waterToday.glasses}/{waterToday.goal} glasses today</p>
           </div>
         </Link>
+
+        <button
+          onClick={async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+              await supabase.from('user_onboarding').delete().eq('user_id', user.id)
+              router.push('/onboarding')
+            }
+          }}
+          className="bg-white rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow text-left w-full"
+        >
+          <div className="w-12 h-12 bg-orange-50 rounded-xl flex items-center justify-center">
+            <span className="text-2xl">🔄</span>
+          </div>
+          <div>
+            <p className="font-semibold text-secondary">Redo Onboarding</p>
+            <p className="text-sm text-muted">Update your dietary preferences</p>
+          </div>
+        </button>
       </div>
 
       {/* Cortisol tip */}
