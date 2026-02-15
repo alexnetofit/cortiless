@@ -23,25 +23,24 @@ export default function SingleSelectStep({ step, onAnswer }: SingleSelectStepPro
               key={option.id}
               onClick={() => onAnswer(option.id)}
               className={`group w-full bg-accent hover:bg-primary/5 border-2 border-transparent hover:border-primary/20 rounded-2xl flex items-center justify-between transition-all duration-200 active:scale-[0.98] overflow-hidden ${
-                hasImages ? 'px-0 min-h-[80px]' : 'px-5 py-4'
+                hasImages ? 'pl-5 pr-0 min-h-[80px]' : 'px-5 py-4'
               }`}
             >
-              <div className="flex items-center gap-3">
+              <span className="text-secondary font-medium text-lg">
+                {option.label}
+              </span>
+              <div className="flex items-center gap-2">
+                {option.emoji && (
+                  <span className="text-2xl pr-5">{option.emoji}</span>
+                )}
                 {hasImages && option.image && (
                   <img
                     src={option.image}
                     alt={option.label}
-                    className="w-20 h-full object-cover object-top self-stretch"
+                    className="w-24 h-20 object-cover object-top self-end"
                   />
                 )}
-                {!hasImages && null}
-                <span className={`text-secondary font-medium text-lg ${hasImages ? '' : ''}`}>
-                  {option.label}
-                </span>
               </div>
-              {option.emoji && (
-                <span className="text-2xl pr-5">{option.emoji}</span>
-              )}
             </button>
           ))}
         </div>
