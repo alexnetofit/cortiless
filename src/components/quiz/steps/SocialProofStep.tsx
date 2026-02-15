@@ -54,21 +54,21 @@ export default function SocialProofStep({ step, onContinue }: SocialProofStepPro
             </div>
           )}
 
-          {/* Image - compact for first social proof */}
+          {/* Image - horizontal crop for first social proof */}
           {step.image && (
-            <div className={isFirstSocialProof ? 'mb-3' : 'mb-6'}>
+            <div className={isFirstSocialProof ? 'mb-4 overflow-hidden rounded-2xl' : 'mb-6'}>
               <img
                 src={step.image}
                 alt=""
-                className={`w-full mx-auto rounded-xl shadow-lg ${isFirstSocialProof ? 'max-w-[280px] md:max-w-sm' : 'max-w-sm'}`}
+                className={`w-full mx-auto ${isFirstSocialProof ? 'max-w-full md:max-w-md object-cover h-[220px] md:h-[280px] rounded-2xl' : 'max-w-sm rounded-xl shadow-lg'}`}
               />
             </div>
           )}
 
           {/* Info content */}
           {step.infoContent?.text && (
-            <div className={`bg-accent rounded-xl mb-4 ${isFirstSocialProof ? 'p-4' : 'p-6 mb-6'}`}>
-              <p className={`text-secondary font-medium ${isFirstSocialProof ? 'text-sm' : ''}`}>{step.infoContent.text}</p>
+            <div className={isFirstSocialProof ? 'mb-4 px-2' : 'bg-accent rounded-xl p-6 mb-6'}>
+              <p className={`text-secondary font-semibold ${isFirstSocialProof ? 'text-lg md:text-xl leading-snug' : 'font-medium'}`}>{step.infoContent.text}</p>
             </div>
           )}
         </div>

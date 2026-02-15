@@ -87,12 +87,12 @@ export default function LandingStep({ step, onAnswer }: LandingStepProps) {
               {step.subtitle}
             </p>
 
-            <div className="grid grid-cols-2 gap-2.5 max-w-sm mx-auto">
+            <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-6">
               {step.options?.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => onAnswer(option.id)}
-                  className="bg-primary hover:bg-primary-dark text-white font-semibold py-3 px-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg text-sm"
+                  className="bg-primary hover:bg-primary-dark text-white font-semibold py-4 px-5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg text-base"
                 >
                   {option.label}
                 </button>
