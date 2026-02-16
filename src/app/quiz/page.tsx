@@ -200,7 +200,9 @@ export default function QuizPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <Header showBack={currentStep > 0} onBack={handleBack} />
+      {step?.type !== 'pricing' && (
+        <Header showBack={currentStep > 0} onBack={handleBack} />
+      )}
 
       {!step?.skipProgress && (
         <ProgressBar current={currentProgressStep} total={totalProgressSteps} />
