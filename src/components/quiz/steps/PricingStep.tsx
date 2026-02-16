@@ -27,7 +27,37 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
 
-  const { currentWeight, targetWeight, unit } = useMemo(() => {
+  // Body type image/data mapping
+  const bodyTypeImages: Record<string, string> = {
+    regular: '/images/regular.png',
+    flabby: '/images/flabby.png',
+    'muffin-top': '/images/muffin-top.png',
+    overweight: '/images/overweight.png',
+    obese: '/images/obese.png',
+  }
+  const targetTypeImages: Record<string, string> = {
+    curvy: '/images/meta-1.png',
+    regular: '/images/meta-2.png',
+    flat: '/images/meta-3.png',
+    fit: '/images/meta-4.png',
+    athletic: '/images/meta-5.png',
+  }
+  const bodyFatData: Record<string, { fat: string; dots: number }> = {
+    regular: { fat: '25%', dots: 3 },
+    flabby: { fat: '30%', dots: 3 },
+    'muffin-top': { fat: '33%', dots: 3 },
+    overweight: { fat: '36%', dots: 2 },
+    obese: { fat: '40%', dots: 2 },
+  }
+  const targetFatData: Record<string, { fat: string; dots: number }> = {
+    curvy: { fat: '22%', dots: 4 },
+    regular: { fat: '20%', dots: 4 },
+    flat: { fat: '18%', dots: 5 },
+    fit: { fat: '15%', dots: 5 },
+    athletic: { fat: '12%', dots: 5 },
+  }
+
+  const { currentWeight, targetWeight, unit, currentBodyType, targetBodyType } = useMemo(() => {
     const weightData = answers['weight'] as Record<string, string> | undefined
     const desiredData = answers['desired-weight'] as Record<string, string> | undefined
     const isImperial = weightData?.unit === 'imperial'
@@ -39,12 +69,21 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
     if (desiredData) {
       tw = parseFloat(desiredData.desired_weight || desiredData.weight || '63')
     }
+    const cbt = (answers['current-body-type'] as string) || 'flabby'
+    const tbt = (answers['target-body-type'] as string) || 'fit'
     return {
       currentWeight: Math.round(cw),
       targetWeight: Math.round(tw),
       unit: isImperial ? 'lbs' : 'kg',
+      currentBodyType: cbt,
+      targetBodyType: tbt,
     }
   }, [answers])
+
+  const currentImage = bodyTypeImages[currentBodyType] || '/images/flabby.png'
+  const targetImage = targetTypeImages[targetBodyType] || '/images/meta-4.png'
+  const currentFat = bodyFatData[currentBodyType] || { fat: '30%', dots: 3 }
+  const targetFat = targetFatData[targetBodyType] || { fat: '15%', dots: 5 }
 
   const handleCheckout = async () => {
     setLoading(true)
@@ -108,21 +147,52 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-lg w-full mx-auto px-5 py-6">
 
-          {/* Before / After */}
-          <div className="flex justify-center items-end gap-6 mb-6">
-            <div className="text-center">
-              <div className="w-28 h-28 rounded-2xl overflow-hidden bg-accent mb-2">
-                <img src="/images/before.png" alt="Now" className="w-full h-full object-cover" />
+          {/* Before / After comparison */}
+          <div className="bg-accent rounded-2xl p-4 mb-6">
+            {/* Labels */}
+            <div className="flex mb-3">
+              <div className="flex-1 text-center">
+                <p className="font-bold text-secondary text-lg">Now</p>
               </div>
-              <p className="text-xs text-muted">Now</p>
-              <p className="text-lg font-bold text-secondary">{currentWeight} {unit}</p>
+              <div className="w-px bg-gray-300" />
+              <div className="flex-1 text-center">
+                <p className="font-bold text-emerald-600 text-lg italic">After the plan</p>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="w-28 h-28 rounded-2xl overflow-hidden bg-accent mb-2">
-                <img src="/images/after.png" alt="After plan" className="w-full h-full object-cover" />
+
+            {/* Images side by side */}
+            <div className="flex gap-2 mb-4">
+              <div className="flex-1 rounded-xl overflow-hidden bg-white h-48">
+                <img src={currentImage} alt="Current body" className="w-full h-full object-contain object-bottom" />
               </div>
-              <p className="text-xs text-muted">After plan</p>
-              <p className="text-lg font-bold text-emerald-600">{targetWeight} {unit}</p>
+              <div className="flex-1 rounded-xl overflow-hidden bg-white h-48">
+                <img src={targetImage} alt="Target body" className="w-full h-full object-contain object-bottom" />
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="flex">
+              <div className="flex-1 pl-2">
+                <p className="font-bold text-secondary text-sm">Body fat</p>
+                <p className="text-secondary text-xl font-bold">{currentFat.fat}</p>
+                <p className="font-bold text-secondary text-sm mt-2">Healthy weight</p>
+                <div className="flex gap-1 mt-1">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className={`w-3 h-3 rounded-full ${i <= currentFat.dots ? 'bg-primary' : 'bg-gray-300'}`} />
+                  ))}
+                </div>
+              </div>
+              <div className="w-px bg-gray-300" />
+              <div className="flex-1 pl-4">
+                <p className="font-bold text-secondary text-sm">Body fat</p>
+                <p className="text-emerald-600 text-xl font-bold">{targetFat.fat}</p>
+                <p className="font-bold text-secondary text-sm mt-2">Healthy weight</p>
+                <div className="flex gap-1 mt-1">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className={`w-3 h-3 rounded-full ${i <= targetFat.dots ? 'bg-primary' : 'bg-gray-300'}`} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
