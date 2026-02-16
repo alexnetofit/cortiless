@@ -341,7 +341,7 @@ export const QUIZ_STEPS: QuizStep[] = [
     id: 'social-proof-forbes',
     type: 'social-proof',
     title: "The best women's lifestyle app in 2025",
-    image: '/images/mockup-app.png',
+    image: '/images/mockup.png',
   },
 
   // Step 23: Email capture
