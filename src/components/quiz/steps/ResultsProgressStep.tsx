@@ -41,7 +41,7 @@ export default function ResultsProgressStep({ step, answers, onContinue }: Resul
           {/* Weight loss value - centered on page vertical center, nudged 2px down */}
           <div
             className="absolute left-0 w-full flex items-center justify-center"
-            style={{ top: '50%', transform: 'translateY(calc(-50% + 2px))' }}
+            style={{ top: '18%', transform: 'translateY(-50%)' }}
           >
             <span className="text-primary font-bold text-3xl md:text-4xl">
               -{estimatedLoss} {unit}
