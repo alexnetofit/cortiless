@@ -38,10 +38,10 @@ export default function ResultsProgressStep({ step, answers, onContinue }: Resul
             alt="7-day results"
             className="w-full h-auto rounded-2xl"
           />
-          {/* Weight loss value - centered in the bubble */}
+          {/* Weight loss value - centered on page vertical center, nudged 2px down */}
           <div
-            className="absolute flex items-center justify-center"
-            style={{ top: '4%', left: '10%', width: '54%', height: '20%' }}
+            className="absolute left-0 w-full flex items-center justify-center"
+            style={{ top: '50%', transform: 'translateY(calc(-50% + 2px))' }}
           >
             <span className="text-primary font-bold text-3xl md:text-4xl">
               -{estimatedLoss} {unit}
