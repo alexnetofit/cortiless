@@ -132,7 +132,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
     <div className="flex-1 flex flex-col bg-white">
       {/* Sticky timer bar */}
       <div className="sticky top-0 z-50 bg-secondary text-white py-2.5 px-4 flex items-center justify-center gap-3">
-        <div className="bg-emerald-500 text-white font-mono font-bold px-3 py-1 rounded-lg text-lg tracking-wider">
+        <div className="bg-primary text-white font-mono font-bold px-3 py-1 rounded-lg text-lg tracking-wider">
           {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
         </div>
         <span className="text-sm font-medium">Reserved price expires soon!</span>
@@ -156,7 +156,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
               </div>
               <div className="w-px bg-gray-300" />
               <div className="flex-1 text-center">
-                <p className="font-bold text-emerald-600 text-lg italic">After the plan</p>
+                <p className="font-bold text-primary text-lg italic">After the plan</p>
               </div>
             </div>
 
@@ -185,7 +185,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
               <div className="w-px bg-gray-300" />
               <div className="flex-1 pl-4">
                 <p className="font-bold text-secondary text-sm">Body fat</p>
-                <p className="text-emerald-600 text-xl font-bold">{targetFat.fat}</p>
+                <p className="text-primary text-xl font-bold">{targetFat.fat}</p>
                 <p className="font-bold text-secondary text-sm mt-2">Healthy weight</p>
                 <div className="flex gap-1 mt-1">
                   {[1, 2, 3, 4, 5].map(i => (
@@ -224,7 +224,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
           </div>
 
           {/* Green banner */}
-          <div className="bg-emerald-500 text-white text-center py-3 rounded-2xl mb-5 font-semibold">
+          <div className="bg-primary text-white text-center py-3 rounded-2xl mb-5 font-semibold">
             What is waiting for you inside?
           </div>
 
@@ -370,7 +370,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
           </div>
 
           {/* Footer */}
-          <div className="border-t border-gray-200 pt-6 pb-24 text-center">
+          <div className="border-t border-gray-200 pt-6 pb-8 text-center">
             <p className="text-xs text-muted mb-2">
               Questions? Contact us at{' '}
               <a href="mailto:support@cortiless.com" className="text-primary hover:underline">
@@ -382,17 +382,6 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Sticky bottom CTA */}
-      <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 px-5 py-3 z-50">
-        <button
-          onClick={handleCheckout}
-          disabled={loading}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-bold py-4 rounded-full transition-all shadow-lg text-lg"
-        >
-          {loading ? 'Processing...' : `Get my plan - ${PLANS[selectedPlan].priceDisplay}`}
-        </button>
       </div>
     </div>
   )
