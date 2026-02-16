@@ -19,12 +19,7 @@ export default function Header({ showBack, onBack }: HeaderProps) {
           <ChevronLeft className="w-6 h-6" />
         </button>
       )}
-      <div className="flex items-center gap-2">
-        <div className="bg-primary text-white text-xs font-bold rounded-md px-1.5 py-0.5">
-          CL
-        </div>
-        <span className="font-semibold text-secondary text-lg">Health</span>
-      </div>
+      <img src="/images/logo.png" alt="Cortiless Health" className="h-8" />
     </header>
   )
 }
