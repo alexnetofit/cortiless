@@ -44,50 +44,33 @@ export default function QuizPage() {
   const [unitSystem, setUnitSystem] = useState<'imperial' | 'metric'>('metric')
   const [ready, setReady] = useState(false)
 
-  // Initialize session - restore from localStorage
+  // Initialize: URL slug determines current step, localStorage restores answers
   useEffect(() => {
     const initSession = async () => {
       try {
-        // 1. Try to restore existing progress (highest priority)
-        const savedStep = load('quiz_current_step')
-        const savedAnswers = load('quiz_answers')
-
-        // Check if URL has a step slug
+        // Determine step from URL slug
         const pathParts = window.location.pathname.split('/')
         const urlSlug = pathParts.length >= 3 ? pathParts[2] : null
-        const urlStepIndex = urlSlug ? getStepFromSlug(urlSlug) : -1
+        const stepIndex = urlSlug ? getStepFromSlug(urlSlug) : 0
 
-        if (urlStepIndex > 0) {
-          // URL has a valid step - use it
-          setCurrentStep(urlStepIndex)
-          if (savedAnswers) {
-            try { setAnswers(JSON.parse(savedAnswers)) } catch { /* ignore */ }
-          }
-          const existingId = load('quiz_session_id')
-          if (existingId) setSessionId(existingId)
-          const savedUnit = load('quiz_unit_system')
-          if (savedUnit === 'imperial' || savedUnit === 'metric') setUnitSystem(savedUnit)
-          window.history.replaceState({ step: urlStepIndex }, '', window.location.pathname)
-          setReady(true)
-          return
+        setCurrentStep(stepIndex)
+        window.history.replaceState({ step: stepIndex }, '', window.location.pathname)
+
+        // Restore cached answers (input values like weight, height, email, etc.)
+        const savedAnswers = load('quiz_answers')
+        if (savedAnswers) {
+          try { setAnswers(JSON.parse(savedAnswers)) } catch { /* ignore */ }
         }
 
-        if (savedStep && parseInt(savedStep) > 0) {
-          const stepIndex = parseInt(savedStep)
-          setCurrentStep(stepIndex)
-          if (savedAnswers) {
-            try { setAnswers(JSON.parse(savedAnswers)) } catch { /* ignore */ }
-          }
-          const existingId = load('quiz_session_id')
-          if (existingId) setSessionId(existingId)
-          const savedUnit = load('quiz_unit_system')
-          if (savedUnit === 'imperial' || savedUnit === 'metric') setUnitSystem(savedUnit)
-          updateUrl(stepIndex, true)
-          setReady(true)
-          return
-        }
+        // Restore unit system
+        const savedUnit = load('quiz_unit_system')
+        if (savedUnit === 'imperial' || savedUnit === 'metric') setUnitSystem(savedUnit)
 
-        // 2. Check if coming from landing page with initial answer
+        // Restore session ID
+        const existingId = load('quiz_session_id')
+        if (existingId) setSessionId(existingId)
+
+        // Check if coming from landing page with initial answer
         const initialAnswer = load('quiz_initial_answer')
         if (initialAnswer) {
           const initialAnswers = { 'weight-loss-goal': initialAnswer }
@@ -95,31 +78,32 @@ export default function QuizPage() {
           setCurrentStep(1)
           remove('quiz_initial_answer')
           store('quiz_answers', JSON.stringify(initialAnswers))
-          store('quiz_current_step', '1')
           updateUrl(1, true)
-        } else {
+        } else if (!urlSlug) {
           updateUrl(0, true)
         }
 
-        // 3. Try to create DB session (non-blocking)
-        try {
-          const urlParams = new URLSearchParams(window.location.search)
-          const { data, error } = await supabase
-            .from('quiz_sessions')
-            .insert({
-              utm_source: urlParams.get('utm_source'),
-              utm_medium: urlParams.get('utm_medium'),
-              utm_campaign: urlParams.get('utm_campaign'),
-            })
-            .select('id')
-            .single()
+        // Try to create DB session if none exists (non-blocking)
+        if (!existingId) {
+          try {
+            const urlParams = new URLSearchParams(window.location.search)
+            const { data, error } = await supabase
+              .from('quiz_sessions')
+              .insert({
+                utm_source: urlParams.get('utm_source'),
+                utm_medium: urlParams.get('utm_medium'),
+                utm_campaign: urlParams.get('utm_campaign'),
+              })
+              .select('id')
+              .single()
 
-          if (!error && data) {
-            setSessionId(data.id)
-            store('quiz_session_id', data.id)
+            if (!error && data) {
+              setSessionId(data.id)
+              store('quiz_session_id', data.id)
+            }
+          } catch {
+            console.warn('Could not create quiz session in DB')
           }
-        } catch {
-          console.warn('Could not create quiz session in DB')
         }
       } catch {
         console.warn('Quiz init error - continuing without DB')
@@ -136,7 +120,6 @@ export default function QuizPage() {
       const stepIndex = event.state?.step
       if (typeof stepIndex === 'number' && stepIndex >= 0 && stepIndex < QUIZ_STEPS.length) {
         setCurrentStep(stepIndex)
-        store('quiz_current_step', String(stepIndex))
       }
     }
 
@@ -147,7 +130,6 @@ export default function QuizPage() {
   // Save answers to localStorage and Supabase
   const saveAnswers = useCallback(async (newAnswers: Record<string, unknown>, step: number) => {
     store('quiz_answers', JSON.stringify(newAnswers))
-    store('quiz_current_step', String(step))
 
     if (sessionId) {
       try {
