@@ -19,6 +19,24 @@ function remove(key: string) {
   try { localStorage.removeItem(key) } catch { /* ignore */ }
 }
 
+// Helper: get step index from URL slug
+function getStepFromSlug(slug: string | null): number {
+  if (!slug) return 0
+  const index = QUIZ_STEPS.findIndex(s => s.id === slug)
+  return index >= 0 ? index : 0
+}
+
+// Helper: update URL without full navigation
+function updateUrl(stepIndex: number, replace = false) {
+  const stepId = QUIZ_STEPS[stepIndex]?.id || 'start'
+  const url = `/quiz/${stepId}`
+  if (replace) {
+    window.history.replaceState({ step: stepIndex }, '', url)
+  } else {
+    window.history.pushState({ step: stepIndex }, '', url)
+  }
+}
+
 export default function QuizPage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
@@ -34,9 +52,14 @@ export default function QuizPage() {
         const savedStep = load('quiz_current_step')
         const savedAnswers = load('quiz_answers')
 
-        if (savedStep && parseInt(savedStep) > 0) {
-          // Restore previous progress
-          setCurrentStep(parseInt(savedStep))
+        // Check if URL has a step slug
+        const pathParts = window.location.pathname.split('/')
+        const urlSlug = pathParts.length >= 3 ? pathParts[2] : null
+        const urlStepIndex = urlSlug ? getStepFromSlug(urlSlug) : -1
+
+        if (urlStepIndex > 0) {
+          // URL has a valid step - use it
+          setCurrentStep(urlStepIndex)
           if (savedAnswers) {
             try { setAnswers(JSON.parse(savedAnswers)) } catch { /* ignore */ }
           }
@@ -44,6 +67,22 @@ export default function QuizPage() {
           if (existingId) setSessionId(existingId)
           const savedUnit = load('quiz_unit_system')
           if (savedUnit === 'imperial' || savedUnit === 'metric') setUnitSystem(savedUnit)
+          window.history.replaceState({ step: urlStepIndex }, '', window.location.pathname)
+          setReady(true)
+          return
+        }
+
+        if (savedStep && parseInt(savedStep) > 0) {
+          const stepIndex = parseInt(savedStep)
+          setCurrentStep(stepIndex)
+          if (savedAnswers) {
+            try { setAnswers(JSON.parse(savedAnswers)) } catch { /* ignore */ }
+          }
+          const existingId = load('quiz_session_id')
+          if (existingId) setSessionId(existingId)
+          const savedUnit = load('quiz_unit_system')
+          if (savedUnit === 'imperial' || savedUnit === 'metric') setUnitSystem(savedUnit)
+          updateUrl(stepIndex, true)
           setReady(true)
           return
         }
@@ -57,6 +96,9 @@ export default function QuizPage() {
           remove('quiz_initial_answer')
           store('quiz_answers', JSON.stringify(initialAnswers))
           store('quiz_current_step', '1')
+          updateUrl(1, true)
+        } else {
+          updateUrl(0, true)
         }
 
         // 3. Try to create DB session (non-blocking)
@@ -88,6 +130,20 @@ export default function QuizPage() {
     initSession()
   }, [])
 
+  // Listen for browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const stepIndex = event.state?.step
+      if (typeof stepIndex === 'number' && stepIndex >= 0 && stepIndex < QUIZ_STEPS.length) {
+        setCurrentStep(stepIndex)
+        store('quiz_current_step', String(stepIndex))
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
   // Save answers to localStorage and Supabase
   const saveAnswers = useCallback(async (newAnswers: Record<string, unknown>, step: number) => {
     store('quiz_answers', JSON.stringify(newAnswers))
@@ -114,14 +170,13 @@ export default function QuizPage() {
     if (nextStep < QUIZ_STEPS.length) {
       setCurrentStep(nextStep)
       saveAnswers(newAnswers, nextStep)
+      updateUrl(nextStep)
     }
   }, [answers, currentStep, saveAnswers])
 
   const handleBack = useCallback(() => {
     if (currentStep > 0) {
-      const prevStep = currentStep - 1
-      setCurrentStep(prevStep)
-      store('quiz_current_step', String(prevStep))
+      window.history.back()
     }
   }, [currentStep])
 
@@ -143,8 +198,10 @@ export default function QuizPage() {
     }
 
     store('quiz_email', email)
-    setCurrentStep(currentStep + 1)
-    saveAnswers(newAnswers, currentStep + 1)
+    const nextStep = currentStep + 1
+    setCurrentStep(nextStep)
+    saveAnswers(newAnswers, nextStep)
+    updateUrl(nextStep)
   }, [answers, currentStep, sessionId, saveAnswers])
 
   const step = QUIZ_STEPS[currentStep]
