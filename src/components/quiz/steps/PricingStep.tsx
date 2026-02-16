@@ -12,11 +12,11 @@ interface PricingStepProps {
 
 export default function PricingStep({ step, answers, sessionId }: PricingStepProps) {
   const [selectedPlan, setSelectedPlan] = useState<PlanKey>('3-month')
-  const [timeLeft, setTimeLeft] = useState(600) // 10 minutes
+  const [timeLeft, setTimeLeft] = useState(600)
   const [loading, setLoading] = useState(false)
   const [planMode, setPlanMode] = useState<'full' | 'light'>('full')
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
 
-  // Countdown timer
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => (prev > 0 ? prev - 1 : 0))
@@ -27,20 +27,23 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
   const minutes = Math.floor(timeLeft / 60)
   const seconds = timeLeft % 60
 
-  const { currentWeight, targetWeight } = useMemo(() => {
+  const { currentWeight, targetWeight, unit } = useMemo(() => {
     const weightData = answers['weight'] as Record<string, string> | undefined
     const desiredData = answers['desired-weight'] as Record<string, string> | undefined
+    const isImperial = weightData?.unit === 'imperial'
     let cw = 78
     let tw = 63
     if (weightData) {
-      const val = parseFloat(weightData.weight || '78')
-      cw = weightData.unit === 'imperial' ? Math.round(val * 0.453592) : val
+      cw = parseFloat(weightData.weight || '78')
     }
     if (desiredData) {
-      const val = parseFloat(desiredData.desired_weight || desiredData.weight || '63')
-      tw = desiredData.unit === 'imperial' ? Math.round(val * 0.453592) : val
+      tw = parseFloat(desiredData.desired_weight || desiredData.weight || '63')
     }
-    return { currentWeight: cw, targetWeight: tw }
+    return {
+      currentWeight: Math.round(cw),
+      targetWeight: Math.round(tw),
+      unit: isImperial ? 'lbs' : 'kg',
+    }
   }, [answers])
 
   const handleCheckout = async () => {
@@ -50,11 +53,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          plan: selectedPlan,
-          email,
-          sessionId,
-        }),
+        body: JSON.stringify({ plan: selectedPlan, email, sessionId }),
       })
       const data = await res.json()
       if (data.url) {
@@ -69,72 +68,98 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
     }
   }
 
+  const features = [
+    { icon: '🎯', color: 'bg-pink-100', title: 'A full personalized weight loss plan', desc: 'Beyond cortisol management' },
+    { icon: '🍽️', color: 'bg-purple-100', title: 'A customized meal plan', desc: 'Based on your preferences and goals' },
+    { icon: '📊', color: 'bg-blue-100', title: "Cortisol-based approach to women's health", desc: 'Healthy hormone balance' },
+    { icon: '✅', color: 'bg-green-100', title: 'A daily action plan to improve your health', desc: 'Step by step guidance' },
+    { icon: '🏋️', color: 'bg-orange-100', title: 'Our 12-week fitness program', desc: 'Gentle yet effective exercises' },
+    { icon: '💧', color: 'bg-cyan-100', title: 'Progress tracker & daily reminders', desc: 'Stay motivated and consistent' },
+  ]
+
+  const testimonials = [
+    { name: 'Sarah M.', age: 52, color: 'bg-orange-400', text: "I've tried everything and this is the first program that actually addresses WHY I couldn't lose weight. Down 15 lbs in 8 weeks!" },
+    { name: 'Jennifer K.', age: 47, color: 'bg-yellow-500', text: "The meal plans are so easy to follow. I'm sleeping better and my energy is through the roof. Best investment I've made." },
+    { name: 'Linda R.', age: 55, color: 'bg-rose-400', text: "Finally something designed for women my age. The cortisol approach makes so much sense. I feel like a new person." },
+  ]
+
+  const faqs = [
+    { q: 'Is this program safe?', a: 'Yes! Our program is designed by certified nutritionists and fitness coaches. It focuses on natural cortisol management through diet, exercise, and lifestyle changes. Always consult your doctor before starting any new program.' },
+    { q: 'Why is this different from other diets?', a: 'We focus on cortisol management, which is the root cause of weight gain in women over 40. Traditional diets ignore hormonal balance and often lead to yo-yo dieting.' },
+    { q: "What if it doesn't work for me?", a: "We offer a 30-day money-back guarantee. If you're not satisfied with the program, we'll refund your purchase - no questions asked." },
+  ]
+
   return (
     <div className="flex-1 flex flex-col bg-white">
-      {/* Timer bar */}
-      <div className="bg-secondary text-white text-center py-2 px-4 flex items-center justify-center gap-3">
-        <div className="bg-primary text-white font-mono font-bold px-3 py-1 rounded-lg text-lg">
+      {/* Sticky timer bar */}
+      <div className="sticky top-0 z-50 bg-secondary text-white py-2.5 px-4 flex items-center justify-center gap-3">
+        <div className="bg-emerald-500 text-white font-mono font-bold px-3 py-1 rounded-lg text-lg tracking-wider">
           {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
         </div>
-        <span className="text-sm">Reserved price expires soon!</span>
-        <button className="bg-success text-white text-sm font-semibold px-4 py-1.5 rounded-full hover:bg-green-600 transition-colors">
+        <span className="text-sm font-medium">Reserved price expires soon!</span>
+        <button
+          onClick={handleCheckout}
+          className="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-4 py-1.5 rounded-full transition-colors"
+        >
           Get my plan
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-8">
-        <div className="max-w-lg w-full mx-auto">
-          {/* Weight comparison */}
-          <div className="flex justify-center gap-8 mb-6">
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-lg w-full mx-auto px-5 py-6">
+
+          {/* Before / After */}
+          <div className="flex justify-center items-end gap-6 mb-6">
             <div className="text-center">
-              <div className="w-24 h-24 bg-accent rounded-xl flex items-center justify-center mb-2">
-                <img src="/images/body-overweight.svg" alt="Now" className="w-16 h-16" />
+              <div className="w-28 h-28 rounded-2xl overflow-hidden bg-accent mb-2">
+                <img src="/images/before.png" alt="Now" className="w-full h-full object-cover" />
               </div>
-              <p className="text-sm text-muted">Now</p>
-              <p className="font-bold text-secondary">{currentWeight} kg</p>
+              <p className="text-xs text-muted">Now</p>
+              <p className="text-lg font-bold text-secondary">{currentWeight} {unit}</p>
             </div>
             <div className="text-center">
-              <div className="w-24 h-24 bg-accent rounded-xl flex items-center justify-center mb-2">
-                <img src="/images/target-fit.svg" alt="After" className="w-16 h-16" />
+              <div className="w-28 h-28 rounded-2xl overflow-hidden bg-accent mb-2">
+                <img src="/images/after.png" alt="After plan" className="w-full h-full object-cover" />
               </div>
-              <p className="text-sm text-muted">After plan</p>
-              <p className="font-bold text-primary">{targetWeight} kg</p>
+              <p className="text-xs text-muted">After plan</p>
+              <p className="text-lg font-bold text-emerald-600">{targetWeight} {unit}</p>
             </div>
           </div>
 
-          {/* Plan mode toggle */}
+          {/* Title */}
           <h3 className="text-xl font-bold text-secondary text-center mb-4">
             Choose <span className="text-primary">Your Plan</span>
           </h3>
 
-          <div className="flex justify-center mb-6">
-            <div className="bg-accent rounded-full p-1 flex gap-1">
+          {/* Plan mode toggle */}
+          <div className="flex justify-center mb-5">
+            <div className="bg-gray-100 rounded-full p-1 flex gap-1">
               <button
                 onClick={() => setPlanMode('full')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  planMode === 'full' ? 'bg-white shadow text-secondary' : 'text-muted'
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  planMode === 'full' ? 'bg-white shadow-md text-secondary' : 'text-muted'
                 }`}
               >
-                Full weight loss
+                <span>🔥</span> Full weight loss
               </button>
               <button
                 onClick={() => setPlanMode('light')}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  planMode === 'light' ? 'bg-white shadow text-secondary' : 'text-muted'
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  planMode === 'light' ? 'bg-white shadow-md text-secondary' : 'text-muted'
                 }`}
               >
-                Light weight loss
+                <span>🌿</span> Light weight loss
               </button>
             </div>
           </div>
 
-          {/* Discount banner */}
-          <div className="bg-primary text-white text-center py-2 rounded-xl mb-4 text-sm font-semibold">
+          {/* Green banner */}
+          <div className="bg-emerald-500 text-white text-center py-3 rounded-2xl mb-5 font-semibold">
             What is waiting for you inside?
           </div>
 
-          {/* Plan options */}
-          <div className="flex flex-col gap-3 mb-6">
+          {/* Plan cards */}
+          <div className="flex flex-col gap-3 mb-4">
             {(Object.keys(PLANS) as PlanKey[]).map((planKey) => {
               const plan = PLANS[planKey]
               const isSelected = selectedPlan === planKey
@@ -145,13 +170,13 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
                   onClick={() => setSelectedPlan(planKey)}
                   className={`relative w-full rounded-2xl p-4 flex items-center justify-between border-2 transition-all ${
                     isSelected
-                      ? 'border-primary bg-primary/5'
+                      ? 'border-primary bg-primary/5 shadow-md'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
                   {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-0.5 rounded-full">
-                      MOST POPULAR
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
+                      Most Popular
                     </div>
                   )}
                   <div className="flex items-center gap-3">
@@ -161,7 +186,7 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
                       {isSelected && <div className="w-3 h-3 rounded-full bg-primary" />}
                     </div>
                     <div className="text-left">
-                      <p className="font-semibold text-secondary">{plan.name}</p>
+                      <p className="font-bold text-secondary">{plan.name}</p>
                       <p className="text-xs text-muted">{plan.priceDisplay} total</p>
                     </div>
                   </div>
@@ -175,121 +200,129 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
           </div>
 
           {/* Guarantee */}
-          <p className="text-center text-sm text-muted mb-4">
+          <p className="text-center text-sm text-muted mb-5">
             30-day money-back guarantee
           </p>
 
-          {/* Checkout buttons */}
-          <div className="flex flex-col gap-3 mb-8">
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 text-white font-semibold py-4 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-            >
-              {loading ? 'Processing...' : 'Get my plan'}
-            </button>
-          </div>
+          {/* CTA Button */}
+          <button
+            onClick={handleCheckout}
+            disabled={loading}
+            className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-bold py-4 rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-lg text-lg mb-10"
+          >
+            {loading ? 'Processing...' : 'Get my plan'}
+          </button>
 
-          {/* Features */}
-          <div className="mb-8">
-            <h3 className="text-lg font-bold text-secondary text-center mb-6">
-              Easy-to-use app to get your weight loss goal
-            </h3>
+          {/* Features section */}
+          <h3 className="text-lg font-bold text-secondary text-center mb-6">
+            Easy-to-use app to get your weight loss goal
+          </h3>
 
-            <div className="space-y-4">
-              {[
-                { icon: '🎯', title: 'A full personalized weight loss plan', desc: 'Beyond cortisol management' },
-                { icon: '🍽️', title: 'A customized meal plan', desc: 'Based on your preferences and goals' },
-                { icon: '📊', title: 'Cortisol-based approach to women\'s', desc: 'Healthy hormone balance' },
-                { icon: '✅', title: 'A daily action plan to improve your health', desc: 'Step by step guidance' },
-                { icon: '📈', title: 'Our 12-week fitness program', desc: 'Gentle yet effective exercises' },
-                { icon: '💧', title: 'Progress tracker & daily reminders', desc: 'Stay motivated and consistent' },
-              ].map((feature, i) => (
-                <div key={i} className="flex items-start gap-3 bg-accent rounded-xl p-4">
+          <div className="space-y-3 mb-10">
+            {features.map((feature, i) => (
+              <div key={i} className="flex items-center gap-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div className={`w-12 h-12 ${feature.color} rounded-xl flex items-center justify-center flex-shrink-0`}>
                   <span className="text-2xl">{feature.icon}</span>
-                  <div>
-                    <p className="text-secondary font-semibold text-sm">{feature.title}</p>
-                    <p className="text-muted text-xs">{feature.desc}</p>
-                  </div>
                 </div>
-              ))}
-            </div>
+                <div>
+                  <p className="text-secondary font-semibold text-sm">{feature.title}</p>
+                  <p className="text-muted text-xs">{feature.desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Media logos */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <p className="text-lg font-bold text-secondary mb-4">Our program and coaches featured in</p>
-            <div className="flex flex-wrap justify-center gap-3 opacity-50">
-              {['Mirror', 'Forbes Health', 'Sky Sports', 'The Guardian', 'Yahoo Finance'].map((name) => (
-                <span key={name} className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded">
-                  {name}
-                </span>
-              ))}
-            </div>
+            <img src="/images/forbes.avif" alt="Featured in media" className="w-full max-w-sm mx-auto" />
           </div>
 
           {/* Testimonials */}
-          <div className="bg-accent rounded-2xl p-6 mb-8">
-            <h4 className="text-lg font-bold text-secondary text-center mb-4">
+          <div className="bg-amber-50 rounded-2xl p-6 mb-10">
+            <h4 className="text-lg font-bold text-secondary text-center mb-5">
               What our members say about us
             </h4>
             <div className="space-y-4">
-              {[
-                { name: 'Sarah M.', age: 52, text: "I've tried everything and this is the first program that actually addresses WHY I couldn't lose weight. Down 15 lbs in 8 weeks!" },
-                { name: 'Jennifer K.', age: 47, text: "The meal plans are so easy to follow. I'm sleeping better and my energy is through the roof. Best investment I've made." },
-                { name: 'Linda R.', age: 55, text: "Finally something designed for women my age. The cortisol approach makes so much sense. I feel like a new person." },
-              ].map((testimonial, i) => (
-                <div key={i} className="bg-white rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary font-bold text-sm">
-                      {testimonial.name[0]}
+              {testimonials.map((t, i) => (
+                <div key={i} className="bg-white rounded-xl p-4 shadow-sm">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className={`w-10 h-10 ${t.color} rounded-full flex items-center justify-center text-white font-bold text-sm`}>
+                      {t.name[0]}
                     </div>
                     <div>
-                      <p className="text-secondary font-semibold text-sm">{testimonial.name}</p>
-                      <p className="text-muted text-xs">Age {testimonial.age}</p>
+                      <p className="text-secondary font-semibold text-sm">{t.name}</p>
+                      <p className="text-muted text-xs">Age {t.age}</p>
                     </div>
-                    <div className="ml-auto flex gap-0.5 text-warning">
+                    <div className="ml-auto flex gap-0.5">
                       {[1, 2, 3, 4, 5].map(s => (
-                        <svg key={s} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <svg key={s} className="w-4 h-4 text-amber-400 fill-current" viewBox="0 0 24 24">
                           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                         </svg>
                       ))}
                     </div>
                   </div>
-                  <p className="text-muted text-sm">{testimonial.text}</p>
+                  <p className="text-muted text-sm leading-relaxed">{t.text}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* FAQ */}
-          <div className="mb-8">
-            <h4 className="text-lg font-bold text-secondary text-center mb-4">
+          <div className="mb-10">
+            <h4 className="text-lg font-bold text-secondary text-center mb-5">
               What members often ask
             </h4>
-            {[
-              { q: 'Is this program safe?', a: 'Yes! Our program is designed by certified nutritionists and fitness coaches. Always consult your doctor before starting any new program.' },
-              { q: 'Why is this different from other diets?', a: 'We focus on cortisol management, which is the root cause of weight gain in women over 40. Traditional diets ignore hormonal balance.' },
-              { q: 'What if it doesn\'t work for me?', a: 'We offer a 30-day money-back guarantee. If you\'re not satisfied, we\'ll refund your purchase - no questions asked.' },
-            ].map((faq, i) => (
-              <details key={i} className="border-b border-gray-200 py-3">
-                <summary className="cursor-pointer text-secondary font-medium">{faq.q}</summary>
-                <p className="text-muted text-sm mt-2">{faq.a}</p>
-              </details>
-            ))}
+            <div className="space-y-0">
+              {faqs.map((faq, i) => (
+                <div key={i} className="border-b border-gray-200">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full flex items-center justify-between py-4 text-left"
+                  >
+                    <span className="text-secondary font-medium pr-4">
+                      <span className="text-primary mr-2">▸</span>
+                      {faq.q}
+                    </span>
+                    <svg
+                      className={`w-5 h-5 text-muted flex-shrink-0 transition-transform ${openFaq === i ? 'rotate-180' : ''}`}
+                      fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                  </button>
+                  {openFaq === i && (
+                    <p className="text-muted text-sm pb-4 pl-6 leading-relaxed">{faq.a}</p>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Bottom CTA */}
-          <div className="sticky bottom-0 bg-white py-4 border-t border-gray-100">
-            <button
-              onClick={handleCheckout}
-              disabled={loading}
-              className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 text-white font-semibold py-4 rounded-full transition-all duration-200 shadow-lg"
-            >
-              {loading ? 'Processing...' : `Get my plan - ${PLANS[selectedPlan].priceDisplay}`}
-            </button>
+          {/* Footer */}
+          <div className="border-t border-gray-200 pt-6 pb-24 text-center">
+            <p className="text-xs text-muted mb-2">
+              Questions? Contact us at{' '}
+              <a href="mailto:support@cortiless.com" className="text-primary hover:underline">
+                support@cortiless.com
+              </a>
+            </p>
+            <p className="text-xs text-muted">
+              © {new Date().getFullYear()} Cortiless Health. All rights reserved.
+            </p>
           </div>
         </div>
+      </div>
+
+      {/* Sticky bottom CTA */}
+      <div className="sticky bottom-0 bg-white/95 backdrop-blur-sm border-t border-gray-100 px-5 py-3 z-50">
+        <button
+          onClick={handleCheckout}
+          disabled={loading}
+          className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-bold py-4 rounded-full transition-all shadow-lg text-lg"
+        >
+          {loading ? 'Processing...' : `Get my plan - ${PLANS[selectedPlan].priceDisplay}`}
+        </button>
       </div>
     </div>
   )
