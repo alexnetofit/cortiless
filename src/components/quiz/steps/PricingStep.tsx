@@ -13,7 +13,6 @@ interface PricingStepProps {
 export default function PricingStep({ step, answers, sessionId }: PricingStepProps) {
   const [selectedPlan, setSelectedPlan] = useState<PlanKey>('3-month')
   const [timeLeft, setTimeLeft] = useState(600)
-  const [loading, setLoading] = useState(false)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [activeTestimonial, setActiveTestimonial] = useState(0)
   const [scrolled, setScrolled] = useState(false)
@@ -105,26 +104,17 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
   const currentFat = bodyFatData[currentBodyType] || { fat: '30%', dots: 3 }
   const targetFat = targetFatData[targetBodyType] || { fat: '15%', dots: 5 }
 
-  const handleCheckout = async () => {
-    setLoading(true)
-    try {
-      const email = localStorage.getItem('quiz_email') || ''
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan: selectedPlan, email, sessionId }),
-      })
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        alert('Error creating checkout session. Please try again.')
-      }
-    } catch {
-      alert('Error creating checkout session. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+  const hotmartLinks: Record<PlanKey, string> = {
+    '12-month': 'https://pay.hotmart.com/A104536511N?off=cjoznhtv',
+    '3-month': 'https://pay.hotmart.com/A104536511N?off=3ydh9ynu',
+    '1-month': 'https://pay.hotmart.com/A104536511N?off=wi00e5uy',
+  }
+
+  const handleCheckout = () => {
+    const email = localStorage.getItem('quiz_email') || ''
+    const url = new URL(hotmartLinks[selectedPlan])
+    if (email) url.searchParams.set('email', email)
+    window.location.href = url.toString()
   }
 
   const features = [
@@ -351,16 +341,11 @@ export default function PricingStep({ step, answers, sessionId }: PricingStepPro
           {/* CTA Button with countdown */}
           <button
             onClick={handleCheckout}
-            disabled={loading}
-            className="w-full bg-primary hover:bg-primary-dark disabled:bg-primary/50 text-white font-bold py-4 rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-lg text-lg mb-4 flex items-center justify-center gap-3"
+            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-full transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-lg text-lg mb-4 flex items-center justify-center gap-3"
           >
-            {loading ? 'Processing...' : (
-              <>
-                <span className="font-mono text-lg">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</span>
-                <span className="w-px h-6 bg-white/40" />
-                <span>Select Plan</span>
-              </>
-            )}
+            <span className="font-mono text-lg">{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</span>
+            <span className="w-px h-6 bg-white/40" />
+            <span>Select Plan</span>
           </button>
 
           {/* Disclaimer */}
