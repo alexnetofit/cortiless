@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import { QUIZ_STEPS, getTotalQuizSteps, getProgressStepNumber } from '@/lib/quiz-config'
-import { supabase } from '@/lib/supabase'
 import Header from '@/components/ui/Header'
 import ProgressBar from '@/components/ui/ProgressBar'
 import QuizStepRenderer from '@/components/quiz/QuizStepRenderer'
@@ -87,17 +86,17 @@ export default function QuizPage() {
         if (!existingId) {
           try {
             const urlParams = new URLSearchParams(window.location.search)
-            const { data, error } = await supabase
-              .from('quiz_sessions')
-              .insert({
+            const res = await fetch('/api/quiz/session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
                 utm_source: urlParams.get('utm_source'),
                 utm_medium: urlParams.get('utm_medium'),
                 utm_campaign: urlParams.get('utm_campaign'),
-              })
-              .select('id')
-              .single()
-
-            if (!error && data) {
+              }),
+            })
+            const data = await res.json()
+            if (data.id) {
               setSessionId(data.id)
               store('quiz_session_id', data.id)
             }
@@ -127,19 +126,20 @@ export default function QuizPage() {
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
-  // Save answers to localStorage and Supabase
   const saveAnswers = useCallback(async (newAnswers: Record<string, unknown>, step: number) => {
     store('quiz_answers', JSON.stringify(newAnswers))
 
     if (sessionId) {
       try {
-        await supabase
-          .from('quiz_sessions')
-          .update({
+        await fetch('/api/quiz/session', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId,
             answers: newAnswers,
             current_step: step + 1,
-          })
-          .eq('id', sessionId)
+          }),
+        })
       } catch { /* non-blocking */ }
     }
   }, [sessionId])
@@ -168,14 +168,16 @@ export default function QuizPage() {
 
     if (sessionId) {
       try {
-        await supabase
-          .from('quiz_sessions')
-          .update({
+        await fetch('/api/quiz/session', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId,
             email,
             answers: newAnswers,
             current_step: currentStep + 1,
-          })
-          .eq('id', sessionId)
+          }),
+        })
       } catch { /* non-blocking */ }
     }
 
